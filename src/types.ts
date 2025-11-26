@@ -1,0 +1,1 @@
+export type HookCallback = ((...args: any[]) => any) | ((...args: any[]) => Promise<any>);
