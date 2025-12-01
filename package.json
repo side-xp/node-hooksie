@@ -1,6 +1,6 @@
 {
   "name": "hooksie",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Hubert GROSSIN",
   "type": "module",
   "description": "Lightweight communication system that combines the simplicity of events and control of observables.",
