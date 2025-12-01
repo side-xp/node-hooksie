@@ -23,7 +23,8 @@
     "prebuild": "node -e \"fs.rmSync('./dist',{recursive:true,force:true});\"",
     "build": "tsc && vite build",
     "prepack": "npm run build && node -e 'import(\"./scripts/pack.mjs\").then(pack => pack.copyDistToRootFolder())'",
-    "postpack": "node -e 'import(\"./scripts/pack.mjs\").then(pack => pack.deleteOutputFilesFromRootFolder())'"
+    "postpack": "node -e 'import(\"./scripts/pack.mjs\").then(pack => pack.deleteOutputFilesFromRootFolder())'",
+    "test": "node ./tests/test.ts"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
