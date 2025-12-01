@@ -51,13 +51,13 @@ export class HooksScope {
    * @param order The order of the callback in its owning hook. The lower the order, the first.
    * @returns Returns the created HookHandle that represents the attached callback.
    */
-  public fasten<T extends HookCallback<any>>(hookName: string, callback: T, order?: number): HookHandle<any> {
+  public fasten<T, U extends HookCallback<T>>(hookName: string, callback: U, order?: number): HookHandle<T> {
     const hook = this._hooks.get(hookName);
     if (!hook) {
       throw new Error(`Failed to attach a callback to the hook "${hookName}" in scope ${this._name}: The named hook doesn't exist.`);
     }
 
-    return hook.fasten<T>(callback, order);
+    return hook.fasten<U>(callback, order);
   }
 
   /**
@@ -65,7 +65,7 @@ export class HooksScope {
    * @param callback The callback to detach.
    * @returns Returns true if the callback has been removed for at least one hook.
    */
-  public detach<T extends HookCallback<T>>(callback: T): boolean;
+  public detach<T, U extends HookCallback<T>>(callback: U): boolean;
 
   /**
    * Detaches a given callback from the named hook, from this scope.
@@ -73,7 +73,7 @@ export class HooksScope {
    * @param callback The callback to detach.
    * @returns Returns true if the callback has been removed successfully.
    */
-  public detach<T extends HookCallback<T>>(hookName: string, callback: T): boolean;
+  public detach<T, U extends HookCallback<T>>(hookName: string, callback: U): boolean;
 
   /**
    * Detaches a given callback from the named hook, from this scope.
@@ -81,13 +81,13 @@ export class HooksScope {
    * @param callback The callback to detach.
    * @returns Returns true if the callback has been removed successfully.
    */
-  public detach<T extends HookCallback<T>>(hookNameOrCallback: string | T, callback?: T): boolean {
+  public detach<T, U extends HookCallback<T>>(hookNameOrCallback: string | U, callback?: U): boolean {
     if (typeof hookNameOrCallback === 'string') {
       const hook = this._hooks.get(hookNameOrCallback);
       if (!hook) {
         throw new Error(`Failed to attach a callback to the hook "${hookNameOrCallback}" in scope ${this._name}: The named hook doesn't exist.`);
       }
-      return hook.detach(callback as T);
+      return hook.detach(callback as U);
     }
     else {
       let success = false;

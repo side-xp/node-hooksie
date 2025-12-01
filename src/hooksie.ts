@@ -64,8 +64,8 @@ export class Hooksie {
    * @param callback The callback to attach to the named hook.
    * @param order The order of the callback in its owning hook. The lower the order, the first.
    */
-  public static fasten<T extends HookCallback<any>>(hookName: string, callback: T, order?: number): HookHandle<any> | null {
-    return this.instance._defaultScope.fasten<T>(hookName, callback, order);
+  public static fasten<T, U extends HookCallback<T>>(hookName: string, callback: U, order?: number): HookHandle<T> | null {
+    return this.instance._defaultScope.fasten<T, U>(hookName, callback, order);
   }
 
   /**
@@ -73,7 +73,7 @@ export class Hooksie {
    * @param callback The callback to detach.
    * @returns Returns true if the callback has been removed for at least one hook.
    */
-  public static detach<T extends HookCallback<any>>(callback: T): boolean;
+  public static detach<T, U extends HookCallback<T>>(callback: U): boolean;
 
   /**
    * Detaches a given callback from the named hook, from the default scope.
@@ -81,7 +81,7 @@ export class Hooksie {
    * @param callback The callback to detach.
    * @returns Returns true if the callback has been removed successfully.
    */
-  public static detach<T extends HookCallback<any>>(hookName: string, callback: T): boolean;
+  public static detach<T, U extends HookCallback<T>>(hookName: string, callback: U): boolean;
 
   /**
    * Detaches a given callback from the named hook, from the default scope.
@@ -89,12 +89,12 @@ export class Hooksie {
    * @param callback The callback to detach.
    * @returns Returns true if the callback has been removed successfully.
    */
-  public static detach<T extends HookCallback<any>>(hookNameOrCallback: string | T, callback?: T): boolean {
+  public static detach<T, U extends HookCallback<T>>(hookNameOrCallback: string | U, callback?: U): boolean {
     if (typeof hookNameOrCallback === 'string') {
-      return this.instance._defaultScope.detach(hookNameOrCallback, callback as T);
+      return this.instance._defaultScope.detach<T, U>(hookNameOrCallback, callback as U);
     }
     else {
-      return this.instance._defaultScope.detach(callback as T);
+      return this.instance._defaultScope.detach<T, U>(callback as U);
     }
   }
 

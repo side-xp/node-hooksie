@@ -1,7 +1,7 @@
 {
   "name": "hooksie",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Hubert GROSSIN",
   "type": "module",
   "description": "Utility for creating hooks with reliable callbacks in an application.",
