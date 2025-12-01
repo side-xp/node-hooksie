@@ -1,10 +1,14 @@
 {
   "name": "hooksie",
-  "private": true,
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Hubert GROSSIN",
   "type": "module",
-  "description": "Utility for creating hooks with reliable callbacks in an application.",
+  "description": "Lightweight communication system that combines the simplicity of events and control of observables.",
+  "keywords": [
+    "event",
+    "com",
+    "observable"
+  ],
   "homepage": "https://github.com/side-xp/node-hooksie#readme",
   "main": "hooksie.js",
   "files": [
@@ -23,8 +27,8 @@
     "dev": "vite",
     "prebuild": "node -e \"fs.rmSync('./dist',{recursive:true,force:true});\"",
     "build": "tsc && vite build",
-    "prepack": "npm run build && node -e 'import(\"./scripts/pack.mjs\").then(pack => pack.copyDistToRootFolder())'",
-    "postpack": "node -e 'import(\"./scripts/pack.mjs\").then(pack => pack.deleteOutputFilesFromRootFolder())'",
+    "prepack": "npm run build && node -e \"import('./scripts/pack.mjs').then(pack => pack.copyDistToRootFolder())\"",
+    "postpack": "node -e \"import('./scripts/pack.mjs').then(pack => pack.deleteOutputFilesFromRootFolder())\"",
     "test": "node ./tests/test.ts"
   },
   "devDependencies": {

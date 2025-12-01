@@ -19,10 +19,13 @@ jobs:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org/'
 
+      - name: Update npm
+        run: npm install -g npm@latest
+
       - name: Install dependencies
         run: npm install
 
       - name: Publish package
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm ci
+          npm publish
