@@ -1,6 +1,5 @@
 {
   "name": "hooksie",
-  "private": true,
   "version": "0.0.2",
   "author": "Hubert GROSSIN",
   "type": "module",
@@ -23,8 +22,8 @@
     "dev": "vite",
     "prebuild": "node -e \"fs.rmSync('./dist',{recursive:true,force:true});\"",
     "build": "tsc && vite build",
-    "prepack": "npm run build && node -e 'import(\"./scripts/pack.mjs\").then(pack => pack.copyDistToRootFolder())'",
-    "postpack": "node -e 'import(\"./scripts/pack.mjs\").then(pack => pack.deleteOutputFilesFromRootFolder())'",
+    "prepack": "npm run build && node -e \"import('./scripts/pack.mjs').then(pack => pack.copyDistToRootFolder())\"",
+    "postpack": "node -e \"import('./scripts/pack.mjs').then(pack => pack.deleteOutputFilesFromRootFolder())\"",
     "test": "node ./tests/test.ts"
   },
   "devDependencies": {
