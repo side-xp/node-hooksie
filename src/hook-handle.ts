@@ -3,7 +3,7 @@ import type { HookCallback } from './types';
 /**
  * Represents a callback attached to a hook.
  */
-export class HookHandle {
+export class HookHandle<T> {
 
   /** {@link id} */
   private _id: number;
@@ -14,7 +14,7 @@ export class HookHandle {
   /**
    * The callback attached to the owning hook.
    */
-  private _callback: HookCallback;
+  private _callback: HookCallback<T>;
 
   /**
    * The function to invoke whenever {@link detach}() is called.
@@ -28,7 +28,7 @@ export class HookHandle {
    * @param callback The attached callback.
    * @param onDetach The function to invoke {@link detach}() is called.
    */
-  constructor(id: number, order: number|undefined, callback: HookCallback, onDetach: () => boolean) {
+  constructor(id: number, order: number|undefined, callback: HookCallback<T>, onDetach: () => boolean) {
     this._id = id;
     this._order = order;
     this._callback = callback;
