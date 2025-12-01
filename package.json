@@ -9,7 +9,8 @@
   "main": "hooksie.js",
   "files": [
     "hooksie.js",
-    "index.d.ts"
+    "index.d.ts",
+    "CHANGELOG.md"
   ],
   "bugs": {
     "url": "https://github.com/side-xp/node-hooksie/issues"
