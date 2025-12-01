@@ -59,7 +59,7 @@ export class Hook<T> {
   /**
    * Invokes all the callbacks registered in this hook.
    */
-  public async invoke<T>(arg: T): Promise<boolean> {
+  public async invoke(arg: T): Promise<boolean> {
     this._handles.sort((a, b) => (a.order || 0) - (b.order || 0));
 
     // Copy the handles array to avoid missing
@@ -90,9 +90,32 @@ export class Hook<T> {
   /**
    * Invokes synchronously all the callbacks in this hook.
    */
-  public invokeSync<T>(arg: T): boolean {
-    console.warn('@todo Invoke sync', arg);
-    return false;
+  public invokeSync(arg: T): boolean {
+    this._handles.sort((a, b) => (a.order || 0) - (b.order || 0));
+
+    // Copy the handles array to avoid missing
+    const callbacks = this._handles.map(h => h['_callback']);
+    const errors = new Array<any>();
+
+    // Invoke all callbacks
+    for (const c of callbacks) {
+      try {
+        c(arg as any);
+      }
+      catch (error) {
+        errors.push(error);
+      }
+    }
+
+    // Log errors if applicable
+    if (errors.length > 0) {
+      for (const err of errors) {
+        console.error(err);
+      }
+      console.error(`Errors when invoking hook "${this._name}". See previous logs for more info.`);
+    }
+
+    return errors.length <= 0;
   }
 
   /**
