@@ -5,15 +5,15 @@ import { getUniqueId } from './utils';
 /**
  * Represents a hook to which callbacks can be attached.
  */
-export class Hook {
+export class Hook<T> {
 
   /** {@link name} */
   private _name: string;
-  
+
   /**
    * The list of handles representing the callbacks attached to this hook.
    */
-  private _handles = new Map<number, HookHandle>();
+  private _handles = new Array<HookHandle<T>>();
 
   /**
    * Public constructor.
@@ -29,16 +29,16 @@ export class Hook {
   public get name(): string {
     return this._name;
   }
-    
+
   /**
    * Attaches a callback to this hook.
    * @param callback The callback to attach.
    * @returns Returns the created HookHandle that represents the attached callback.
    */
-  public fasten<T extends HookCallback>(callback: T, order?: number): HookHandle {
+  public fasten<U extends HookCallback<T>>(callback: U, order?: number): HookHandle<T> {
     const id = getUniqueId();
     const handle = new HookHandle(id, order, callback, () => this._removeCallback(id));
-    this._handles.set(id, handle);
+    this._handles.push(handle);
     return handle;
   }
 
@@ -47,12 +47,51 @@ export class Hook {
    * @param callback The callback to detach.
    * @returns Returns true if the callback has been removed successfully.
    */
-  public detach<T extends HookCallback>(callback: T): boolean {
-    for (const [id, handle] of this._handles) {
-      if (handle['_callback'] === callback) {
-        return this._removeCallback(id);
+  public detach<U extends HookCallback<T>>(callback: U): boolean {
+    for (const handle of this._handles) {
+      if (handle && handle['_callback'] === callback) {
+        return this._removeCallback(handle.id);
       }
     }
+    return false;
+  }
+
+  /**
+   * Invokes all the callbacks registered in this hook.
+   */
+  public async invoke<T>(arg: T): Promise<boolean> {
+    this._handles.sort((a, b) => (a.order || 0) - (b.order || 0));
+
+    // Copy the handles array to avoid missing
+    const callbacks = this._handles.map(h => h['_callback']);
+    const errors = new Array<any>();
+
+    // Invoke all callbacks
+    for (const c of callbacks) {
+      try {
+        await c(arg as any);
+      }
+      catch (error) {
+        errors.push(error);
+      }
+    }
+
+    // Log errors if applicable
+    if (errors.length > 0) {
+      for (const err of errors) {
+        console.error(err);
+      }
+      console.error(`Errors when invoking hook "${this._name}". See previous logs for more info.`);
+    }
+
+    return errors.length <= 0;
+  }
+
+  /**
+   * Invokes synchronously all the callbacks in this hook.
+   */
+  public invokeSync<T>(arg: T): boolean {
+    console.warn('@todo Invoke sync', arg);
     return false;
   }
 
@@ -62,7 +101,13 @@ export class Hook {
    * @returns Returns true if the callback has been removed successfully.
    */
   private _removeCallback(handleId: number): boolean {
-    return this._handles.delete(handleId);
+    const index = this._handles.findIndex(h => h.id === handleId);
+    if (index < 0) {
+      return false;
+    }
+
+    this._handles.splice(index, 1);
+    return true;
   }
 
 }

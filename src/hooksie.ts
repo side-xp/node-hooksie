@@ -25,7 +25,7 @@ export class Hooksie {
    * Private constructor to avoid any conflicts.
    */
   private constructor() {
-    this._defaultScope = this.scope('default');
+    this._defaultScope = Hooksie.scope('default');
   }
 
   /**
@@ -43,9 +43,9 @@ export class Hooksie {
    * @param name The name of the scope to create. This is mostly used for debug purposes.
    * @returns Returns the created scope.
    */
-  public scope(name?: string): HooksScope {
+  public static scope(name?: string): HooksScope {
     const newScope = new HooksScope(name);
-    this._scopes.push(newScope);
+    this.instance._scopes.push(newScope);
     return newScope;
   }
 
@@ -54,8 +54,8 @@ export class Hooksie {
    * @param name The name of the hook to create.
    * @returns Returns the created hook.
    */
-  public hook(name: string): Hook {
-    return this._defaultScope.hook(name);
+  public static hook<T>(name: string): Hook<T> {
+    return this.instance._defaultScope.hook(name);
   }
 
   /**
@@ -64,8 +64,8 @@ export class Hooksie {
    * @param callback The callback to attach to the named hook.
    * @param order The order of the callback in its owning hook. The lower the order, the first.
    */
-  public fasten<T extends HookCallback>(hookName: string, callback: T, order?: number): HookHandle | null {
-    return this._defaultScope.fasten<T>(hookName, callback, order);
+  public static fasten<T extends HookCallback<any>>(hookName: string, callback: T, order?: number): HookHandle<any> | null {
+    return this.instance._defaultScope.fasten<T>(hookName, callback, order);
   }
 
   /**
@@ -73,7 +73,7 @@ export class Hooksie {
    * @param callback The callback to detach.
    * @returns Returns true if the callback has been removed for at least one hook.
    */
-  public detach<T extends HookCallback>(callback: T): boolean;
+  public static detach<T extends HookCallback<any>>(callback: T): boolean;
 
   /**
    * Detaches a given callback from the named hook, from the default scope.
@@ -81,7 +81,7 @@ export class Hooksie {
    * @param callback The callback to detach.
    * @returns Returns true if the callback has been removed successfully.
    */
-  public detach<T extends HookCallback>(hookName: string, callback: T): boolean;
+  public static detach<T extends HookCallback<any>>(hookName: string, callback: T): boolean;
 
   /**
    * Detaches a given callback from the named hook, from the default scope.
@@ -89,12 +89,12 @@ export class Hooksie {
    * @param callback The callback to detach.
    * @returns Returns true if the callback has been removed successfully.
    */
-  public detach<T extends HookCallback>(hookNameOrCallback: string | T, callback?: T): boolean {
+  public static detach<T extends HookCallback<any>>(hookNameOrCallback: string | T, callback?: T): boolean {
     if (typeof hookNameOrCallback === 'string') {
-      return this._defaultScope.detach(hookNameOrCallback, callback as T);
+      return this.instance._defaultScope.detach(hookNameOrCallback, callback as T);
     }
     else {
-      return this._defaultScope.detach(callback as T);
+      return this.instance._defaultScope.detach(callback as T);
     }
   }
 

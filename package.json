@@ -6,6 +6,7 @@
   "type": "module",
   "description": "Utility for creating hooks with reliable callbacks in an application.",
   "homepage": "https://github.com/side-xp/node-hooksie#readme",
+  "main": "hooksie.js",
   "files": [
     "hooksie.js",
     "index.d.ts"

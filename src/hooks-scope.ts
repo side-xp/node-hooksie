@@ -13,7 +13,7 @@ export class HooksScope {
   /**
    * The list of hooks declared from this scope.
    */
-  private _hooks = new Map<string, Hook>();
+  private _hooks = new Map<string, Hook<any>>();
 
   /**
    * Public constructor.
@@ -34,12 +34,12 @@ export class HooksScope {
    * Creates a new hook in this scope.
    * @param name The name of the hook to create in this scope.
    */
-  public hook(name: string): Hook {
+  public hook<T>(name: string): Hook<T> {
     if (this._hooks.has(name)) {
       throw new Error(`Failed to create a new hook in the scope "${this._name}": it already contains a hook named "${name}".`);
     }
 
-    const newHook = new Hook(name);
+    const newHook = new Hook<T>(name);
     this._hooks.set(name, newHook);
     return newHook;
   }
@@ -51,7 +51,7 @@ export class HooksScope {
    * @param order The order of the callback in its owning hook. The lower the order, the first.
    * @returns Returns the created HookHandle that represents the attached callback.
    */
-  public fasten<T extends HookCallback>(hookName: string, callback: T, order?: number): HookHandle {
+  public fasten<T extends HookCallback<any>>(hookName: string, callback: T, order?: number): HookHandle<any> {
     const hook = this._hooks.get(hookName);
     if (!hook) {
       throw new Error(`Failed to attach a callback to the hook "${hookName}" in scope ${this._name}: The named hook doesn't exist.`);
@@ -65,7 +65,7 @@ export class HooksScope {
    * @param callback The callback to detach.
    * @returns Returns true if the callback has been removed for at least one hook.
    */
-  public detach<T extends HookCallback>(callback: T): boolean;
+  public detach<T extends HookCallback<T>>(callback: T): boolean;
 
   /**
    * Detaches a given callback from the named hook, from this scope.
@@ -73,7 +73,7 @@ export class HooksScope {
    * @param callback The callback to detach.
    * @returns Returns true if the callback has been removed successfully.
    */
-  public detach<T extends HookCallback>(hookName: string, callback: T): boolean;
+  public detach<T extends HookCallback<T>>(hookName: string, callback: T): boolean;
 
   /**
    * Detaches a given callback from the named hook, from this scope.
@@ -81,7 +81,7 @@ export class HooksScope {
    * @param callback The callback to detach.
    * @returns Returns true if the callback has been removed successfully.
    */
-  public detach<T extends HookCallback>(hookNameOrCallback: string | T, callback?: T): boolean {
+  public detach<T extends HookCallback<T>>(hookNameOrCallback: string | T, callback?: T): boolean {
     if (typeof hookNameOrCallback === 'string') {
       const hook = this._hooks.get(hookNameOrCallback);
       if (!hook) {
