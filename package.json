@@ -1,6 +1,6 @@
 {
   "name": "@side-xp/hooksie",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "Hubert GROSSIN",
   "type": "module",
   "description": "Lightweight communication system that combines the simplicity of events and control of observables.",
