@@ -17,14 +17,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
+      - name: Prepare for GitHub Packages
+        run: |
+          echo "@side-xp:registry=https://npm.pkg.github.com/" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
+
       - name: Set up Node
         uses: actions/setup-node@v6
         with:
           node-version: '24'
-          registry-url: 'https://npm.pkg.github.com'
+          registry-url: "https://npm.pkg.github.com"
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Publish package
         run: npm publish
