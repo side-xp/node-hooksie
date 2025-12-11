@@ -21,17 +21,20 @@ jobs:
 
       - name: Prepare for GitHub Packages
         run: |
-          echo "@side-xp:registry=https://registry.npmjs.org/" >> ~/.npmrc
-          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
-
-      - name: Update npm
-        run: npm install -g npm@latest
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Remove scope from package name
+        run: |
+          SCOPED_NAME=$(node -p "require('package.json').name")
+          NAME=${SCOPEDNAME#*@*/}
+          echo "Unscoped package name: $NAME"
+          npm pkg set name="$NAME"
 
       - name: Publish package
         run: |
           npm publish --access public --name "hooksie"
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
