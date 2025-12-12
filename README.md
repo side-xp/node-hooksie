@@ -55,6 +55,14 @@ sendInfoHandle.detach();
 updateScoreHook.detach(handleUpdateScore);
 ```
 
+### CDN mode
+
+This package can also be integrated on a web page through jsDelivr CDN. Just include the following line in a `<header>`:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/hooksie/hooksie.js" />
+```
+
 ## Documentation
 
 ### Naming
