@@ -35,6 +35,6 @@ jobs:
 
       - name: Publish package
         run: |
-          npm publish --access public --name "hooksie"
+          npm publish --access public
         env:
           NPM_TOKEN: ${{secrets.NPM_TOKEN}}
