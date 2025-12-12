@@ -28,8 +28,8 @@ jobs:
 
       - name: Remove scope from package name
         run: |
-          SCOPED_NAME=$(node -p "require('package.json').name")
-          NAME=${SCOPEDNAME#*@*/}
+          SCOPED_NAME=$(node -p "require('./package.json').name")
+          NAME=${SCOPED_NAME#*@*/}
           echo "Unscoped package name: $NAME"
           npm pkg set name="$NAME"
 
